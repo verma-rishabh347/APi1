@@ -49,6 +49,11 @@ public class ProfileRepository: IProfileRepository
         {
             if (currentProfile != null)
             {
+                if (profile.Password!=profile.ConfirmPassword)
+                {
+                    return "password and confirm password is differnent";
+
+                }
                 _context.Update(profile);
                 _context.SaveChanges();
                 return "Success";
