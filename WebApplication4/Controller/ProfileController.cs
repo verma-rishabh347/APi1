@@ -32,23 +32,23 @@ public class ProfileController:ControllerBase
 
 
     [HttpPost]
-    public void Post(Profile profile)
+    public string Post(Profile profile)
     {
-        _profileRepository.PostProfile(profile);
+        return _profileRepository.PostProfile(profile);
 
 
     }
 
     [HttpPut("{id}")]
-    public void Put(long id, Profile profile)
+    public string Put(long id, Profile profile)
     {
-       _profileRepository.PutProfile(id, profile);
+       return _profileRepository.PutProfile(id, profile);
     }
 
     [HttpDelete("{id}")]
-    public void Delete(long id)
+    public string Delete(long id)
     {
-        _profileRepository.DeleteProfile(id);
+        return _profileRepository.DeleteProfile(id);
         
     }
     

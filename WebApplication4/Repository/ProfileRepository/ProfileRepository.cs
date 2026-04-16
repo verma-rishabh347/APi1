@@ -23,25 +23,52 @@ public class ProfileRepository: IProfileRepository
         return _context.Profiles.Find(id);
     }
     
-    public void PostProfile(Profile profile)
+    public string PostProfile(Profile profile)
     {
-        _context.Profiles.Add(profile);
-        _context.SaveChanges();
+        if (_context.Profiles.Any(x=>x.Phone==profile.Phone || x.Email==profile.Email) )
+        {
+            return "Acount with same details already exists";
+            
+        }
+        else
+        {
+            _context.Profiles.Add(profile);
+            _context.SaveChanges();
+            return "Success";
+            
+        }
+        
 
 
     }
     
-    public void PutProfile(long id, Profile profile)
+    public string PutProfile(long id, Profile profile)
     {
         var currentProfile = _context.Profiles.Find(id);
-        if (currentProfile != null)
+        if (_context.Profiles.Any(x=>(x.Phone==profile.Phone || x.Email==profile.Email)&&id!=currentProfile.Id) )
         {
-            _context.Update(profile);
-            _context.SaveChanges();
+            if (currentProfile != null)
+            {
+                _context.Update(profile);
+                _context.SaveChanges();
+                return "Success";
+            }
+            else
+            {
+                return "eomething is wrong";
+            }
+            
+            
+            
         }
+        else
+        {
+            return "Email or mobile number is invalid";
+        }
+        
     }
     
-    public void DeleteProfile(long id)
+    public string DeleteProfile(long id)
     {
         var currentProfile = _context.Profiles.Find(id);
         if (currentProfile != null)
@@ -49,6 +76,7 @@ public class ProfileRepository: IProfileRepository
             _context.Profiles.Remove(currentProfile);
             _context.SaveChanges();
         }
+        return "Success";
         
     }
     

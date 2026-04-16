@@ -8,11 +8,11 @@ public interface IProfileRepository
 
     public Profile GetProfile(long id);
 
-    public void PostProfile(Profile profile);
+    public string PostProfile(Profile profile);
 
-    public void PutProfile(long id, Profile profile);
+    public string PutProfile(long id, Profile profile);
 
-    public void DeleteProfile(long id);
+    public string DeleteProfile(long id);
 
 
 
