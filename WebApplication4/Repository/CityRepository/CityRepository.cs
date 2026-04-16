@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication4.Data;
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.City;
 
 namespace WebApplication4.Repository.CityRepository;
 
@@ -13,19 +14,22 @@ public class CityRepository:ICityRepository
         _dataContext = context;
     }
 
-    public List<City> GetCity()
+    public List<GetCityDto> GetCity()
     {
-        return _dataContext.Cities.Include(x=>x.States).ThenInclude(x=>x.Country).ToList();
+           var Results= _dataContext.Cities.Include(x=>x.States).ThenInclude(x=>x.Country).ToList();
+           return Results.Select(x => new GetCityDto{ Id = x.Id, Name = x.Name, StateId = x.StateId, Pincode = x.Pincode }).ToList();
+
+    }
+
+    public GetCityDto GetCity(int id)
+    {
+            var result=_dataContext.Cities.Include(x=>x.States).ThenInclude(x=>x.Country).FirstOrDefault(x => x.Id == id);
+        GetCityDto Results=new GetCityDto{Id = result.Id, Name = result.Name, StateId = result.StateId, Pincode = result.Pincode};
+        return Results;
         
     }
 
-    public City GetCity(int id)
-    {
-        return _dataContext.Cities.Include(x=>x.States).ThenInclude(x=>x.Country).FirstOrDefault(x => x.Id == id);
-        
-    }
-
-    public string AddCity(City city)
+    public string AddCity(CreateUpdateCityDto city)
     {
         if (_dataContext.Cities.Any(x => x.Name == city.Name))
         {
@@ -39,7 +43,8 @@ public class CityRepository:ICityRepository
         }
         else
         {
-            _dataContext.Cities.Add(city);
+            var newCity = new City{Name = city.Name, Pincode = city.Pincode,StateId = city.StateId};
+            _dataContext.Cities.Add(newCity);
             _dataContext.SaveChanges();
             return "City Added Successfully";
             
@@ -49,7 +54,7 @@ public class CityRepository:ICityRepository
         
     }
 
-    public string UpdateCity(int id, City city)
+    public string UpdateCity(int id, CreateUpdateCityDto city)
     {
         if (_dataContext.Cities.Any(x => x.Id != id && (x.Name == city.Name ||x.Pincode == city.Pincode)))
         {

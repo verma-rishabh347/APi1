@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApplication4.Data;
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.Country;
 using WebApplication4.Repository.CountryRepository;
 
 namespace WebApplication4.Controller;
@@ -22,23 +23,23 @@ public class CountryController:ControllerBase
     }
     
     [HttpGet]
-    public List<Country> Get()
+    public List<GetCountryDto> Get()
     {
         return _contryRepository.GetCountry().ToList();
     }
+    [HttpGet("{id}")]
+    
+    public GetCountryDto get(int id)
+    {
+        return _contryRepository.GetCountry(id);
+    }
 
     [HttpPost]
-    public String Add(Country country)
+    public String Add(CreateUpdateCountryDto country)
     {
         return _contryRepository.AddCountry(country);
     }
 
-    [HttpGet("{id}")]
-    
-    public Country get(int id)
-    {
-        return _contryRepository.GetCountry(id);
-    }
 
     [HttpDelete("{id}")]
     public string Delete(int id)
@@ -49,7 +50,7 @@ public class CountryController:ControllerBase
 
 
     [HttpPut("{id}")]
-    public string Put(int id, Country country)
+    public string Put(int id, CreateUpdateCountryDto country)
     {
         return _contryRepository.PutCountry(id, country);
     }

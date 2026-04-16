@@ -1,5 +1,6 @@
 using WebApplication4.Data;
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.Country;
 
 namespace WebApplication4.Repository.CountryRepository;
 
@@ -13,18 +14,20 @@ public class CountryRepository: ICountryRepository
         _dataContext=dataContext;
     }
     
-    public List<Country> GetCountry()
+    public List<GetCountryDto> GetCountry()
     {
-        return _dataContext.Countries.ToList();
+        
+        return _dataContext.Countries.Select(x=>new GetCountryDto{Name = x.Name,Code = x.Code,Id = x.Id}).ToList();
     }
     
-    public Country? GetCountry(int id)
+    public GetCountryDto GetCountry(int id)
     {
-        return _dataContext.Countries.FirstOrDefault(x=>x.Id==id);
+        
+        return _dataContext.Countries.Where(x=>x.Id==id).Select(x=> new GetCountryDto{Name = x.Name,Code = x.Code,Id = x.Id}).FirstOrDefault();
     }
     
     
-    public string AddCountry(Country country)
+    public string AddCountry(CreateUpdateCountryDto country)
     {
         if (_dataContext.Countries.Any(x=>x.Name==country.Name))
         {
@@ -39,7 +42,9 @@ public class CountryRepository: ICountryRepository
         }
         else
         {
-            _dataContext.Countries.Add(country);
+            var newCountry = new Country{Name =  country.Name, Code = country.Code};
+            
+            _dataContext.Countries.Add(newCountry);
             _dataContext.SaveChanges();
             return ("Add successful");
             
@@ -66,7 +71,7 @@ public class CountryRepository: ICountryRepository
     }
     
     
-    public string PutCountry(int id, Country country)
+    public string PutCountry(int id, CreateUpdateCountryDto country)
     {
         var currentCountry = _dataContext.Countries.FirstOrDefault(x => x.Id == id);
 

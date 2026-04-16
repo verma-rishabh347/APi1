@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication4.Data;
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.State;
 
 namespace WebApplication4.Repository.StateRepository;
 
@@ -15,17 +16,19 @@ public class StateRepository:IStateRepository
     }
     
     
-    public List<State> GetState()
+    public List<GetStateDto> GetState()
     {
-        return _dataContext.States.Include(x=>x.Country).ToList();
+        return _dataContext.States.Include(x=>x.Country).Select(x=>new GetStateDto{Id = x.Id,Name = x.Name,CountryId = x.CountryId}).ToList();
     }
 
-    public State GetState(int id)
+    public GetStateDto GetState(int id)
     {
-        return _dataContext.States.Include(x=>x.Country).SingleOrDefault(s => s.Id ==id);
+        State state = _dataContext.States.SingleOrDefault(s => s.Id ==id);
+        GetStateDto result = new GetStateDto{Id = state.Id,Name = state.Name,CountryId = state.CountryId};
+        return result;
     }
 
-    public string AddState(State state)
+    public string AddState(CreateUpdateStateDto state)
     {
         if (_dataContext.States.Any(x => x.Name == state.Name))
         {
@@ -34,7 +37,8 @@ public class StateRepository:IStateRepository
         }
         else
         {
-            _dataContext.States.Add(state);
+            var newState = new State{Name = state.Name,CountryId = state.CountryId,};
+            _dataContext.States.Add(newState);
             _dataContext.SaveChanges();
             return "State added successfully";
             
@@ -43,7 +47,7 @@ public class StateRepository:IStateRepository
         
         
     }
-    public string UpdateState(int id,State state)
+    public string UpdateState(int id,CreateUpdateStateDto state)
     {
         if (_dataContext.States.Any(x => x.Name == state.Name&&x.Id!=id))
         {
@@ -59,10 +63,15 @@ public class StateRepository:IStateRepository
                 currentState.Name = state.Name;
                 currentState.CountryId = state.CountryId;
                 _dataContext.SaveChanges();
+                return "State updated successfully";
             
             }
-            _dataContext.SaveChanges();
-            return "State updated successfully";
+            else
+            {
+                return "State not found";
+            }
+   
+            
             
         }
         

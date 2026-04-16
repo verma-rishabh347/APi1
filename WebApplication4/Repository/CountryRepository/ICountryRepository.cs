@@ -1,14 +1,15 @@
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.Country;
 
 namespace WebApplication4.Repository.CountryRepository;
 
 public interface ICountryRepository
 {
-    public List<Country> GetCountry();
-    public Country GetCountry(int id);
-    public String AddCountry(Country country);
+    public List<GetCountryDto> GetCountry();
+    public GetCountryDto GetCountry(int id);
+    public String AddCountry(CreateUpdateCountryDto country);
     public String DeleteCountry(int id);
 
-    public String PutCountry(int id, Country country);
+    public String PutCountry(int id, CreateUpdateCountryDto country);
 
 }

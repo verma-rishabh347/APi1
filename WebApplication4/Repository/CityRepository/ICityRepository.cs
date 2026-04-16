@@ -1,13 +1,14 @@
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.City;
 
 namespace WebApplication4.Repository.CityRepository;
 
 public interface ICityRepository
 {
-    public List<City> GetCity();
-    public City GetCity(int id);
-    public string AddCity(City city);
-    public string UpdateCity(int id, City city);
+    public List<GetCityDto> GetCity();
+    public GetCityDto GetCity(int id);
+    public string AddCity(CreateUpdateCityDto city);
+    public string UpdateCity(int id, CreateUpdateCityDto city);
     public string DeleteCity(int id);
 
 }

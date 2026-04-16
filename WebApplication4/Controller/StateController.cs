@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApplication4.Data;
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.State;
 using WebApplication4.Repository.StateRepository;
 
 namespace WebApplication4.Controller;
@@ -21,16 +20,16 @@ public class StateController:ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public List<GetStateDto> Get()
     {
-        return Ok(_istateRepository.GetState());
+        return _istateRepository.GetState();
     }
     
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public GetStateDto Get(int id)
     {
 
-        return Ok(_istateRepository.GetState(id));
+        return _istateRepository.GetState(id);
         
         
     }
@@ -38,7 +37,7 @@ public class StateController:ControllerBase
     
 
     [HttpPost]
-    public string Add(State state)
+    public string Add(CreateUpdateStateDto state)
     {
         return _istateRepository.AddState(state);
       
@@ -46,7 +45,7 @@ public class StateController:ControllerBase
     }
 
     [HttpPut("{id}")]
-    public string Update(int id,State state)
+    public string Update(int id,CreateUpdateStateDto state)
     {
         return _istateRepository.UpdateState(id,state);
       
