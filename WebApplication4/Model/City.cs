@@ -11,7 +11,7 @@ public class City
     public int Pincode { get; set; }
     [ForeignKey("States")]
     public int StateId { get; set; }
-    public State? States { get; set; }
+    public State States { get; set; }
     
     
     
