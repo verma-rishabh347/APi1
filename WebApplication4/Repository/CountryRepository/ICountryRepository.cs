@@ -5,11 +5,11 @@ namespace WebApplication4.Repository.CountryRepository;
 
 public interface ICountryRepository
 {
-    public List<GetCountryDto> GetCountry();
-    public GetCountryDto GetCountry(int id);
-    public String AddCountry(CreateUpdateCountryDto country);
-    public String DeleteCountry(int id);
+    public Task<List<GetCountryDto>>  GetCountry();
+    Task<GetCountryDto>  GetCountry(int id);
+    Task<String>  AddCountry(CreateUpdateCountryDto country);
+    Task<String> DeleteCountry(int id);
 
-    public String PutCountry(int id, CreateUpdateCountryDto country);
+    Task<String> PutCountry(int id, CreateUpdateCountryDto country);
 
 }

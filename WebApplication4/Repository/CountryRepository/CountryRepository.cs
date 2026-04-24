@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApplication4.Data;
 using WebApplication4.Model;
 using WebApplication4.Model.DTO.Country;
@@ -14,38 +15,38 @@ public class CountryRepository: ICountryRepository
         _dataContext=dataContext;
     }
     
-    public List<GetCountryDto> GetCountry()
+    public async Task<List<GetCountryDto>>  GetCountry()
     {
         
-        return _dataContext.Countries.Select(x=>new GetCountryDto{Name = x.Name,Code = x.Code,Id = x.Id}).ToList();
+        return await _dataContext.Countries.Select(x=>new GetCountryDto{Name = x.Name,Code = x.Code,Id = x.Id}).ToListAsync();
     }
     
-    public GetCountryDto GetCountry(int id)
+    public async Task<GetCountryDto>  GetCountry(int id)
     {
         
-        return _dataContext.Countries.Where(x=>x.Id==id).Select(x=> new GetCountryDto{Name = x.Name,Code = x.Code,Id = x.Id}).FirstOrDefault();
+        return await _dataContext.Countries.Where(x=>x.Id==id).Select(x=> new GetCountryDto{Name = x.Name,Code = x.Code,Id = x.Id}).FirstOrDefaultAsync();
     }
     
     
-    public string AddCountry(CreateUpdateCountryDto country)
+    public async Task<string>  AddCountry(CreateUpdateCountryDto country)
     {
-        if (_dataContext.Countries.Any(x=>x.Name==country.Name))
+        if (await _dataContext.Countries.AnyAsync(x=>x.Name==country.Name))
         {
             return ("Name Already Exists");
             
 
 
         }
-        else if (_dataContext.Countries.Any(x=>x.Code==country.Code))
+        else if ( await _dataContext.Countries.AnyAsync(x=>x.Code==country.Code))
         {
-            return ("Code Already Exists");
+            return  ("Code Already Exists");
         }
         else
         {
             var newCountry = new Country{Name =  country.Name, Code = country.Code};
             
-            _dataContext.Countries.Add(newCountry);
-            _dataContext.SaveChanges();
+            await _dataContext.Countries.AddAsync(newCountry);
+            await _dataContext.SaveChangesAsync();
             return ("Add successful");
             
         }
@@ -53,14 +54,14 @@ public class CountryRepository: ICountryRepository
        
     }
     
-    public string DeleteCountry(int id)
+    public async Task<string> DeleteCountry(int id)
     {
-        var country = _dataContext.Countries.FirstOrDefault(x => x.Id == id);
+        var country = await _dataContext.Countries.FirstOrDefaultAsync(x => x.Id == id);
 
         if (country != null)
         {
             _dataContext.Countries.Remove(country);
-            _dataContext.SaveChanges();
+             await _dataContext.SaveChangesAsync();
             return ("Delete successful");
             
         }
@@ -71,16 +72,16 @@ public class CountryRepository: ICountryRepository
     }
     
     
-    public string PutCountry(int id, CreateUpdateCountryDto country)
+    public async Task<string> PutCountry(int id, CreateUpdateCountryDto country)
     {
-        var currentCountry = _dataContext.Countries.FirstOrDefault(x => x.Id == id);
+        var currentCountry = await _dataContext.Countries.FirstOrDefaultAsync(x => x.Id == id);
 
         if (currentCountry == null)
         {
             return "Country Not Exists";
         }
 
-        bool alreadyExists = _dataContext.Countries.Any(x =>
+        bool alreadyExists = await _dataContext.Countries.AnyAsync(x =>
             x.Id != id &&
             (x.Name == country.Name || x.Code == country.Code));
 
@@ -92,7 +93,7 @@ public class CountryRepository: ICountryRepository
         currentCountry.Name = country.Name;
         currentCountry.Code = country.Code;
 
-        _dataContext.SaveChanges();
+        await _dataContext.SaveChangesAsync();
 
         return "Update Successful";
     

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApplication4.Data;
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.Profile;
 
 namespace WebApplication4.Repository.ProfileRepository;
 
@@ -13,48 +14,70 @@ public class ProfileRepository: IProfileRepository
         _context = context;
     }
     
-    public List<Profile> GetProfile()
+    public List<GetProfileDto> GetProfile()
     {
-        return _context.Profiles.Include(x=>x.City).ThenInclude(x=>x.States).ThenInclude(x=>x.Country).ToList();
+           var profile= _context.Profiles.Select(x=>new GetProfileDto{Id = x.Id,Email = x.Email,FirstName = x.FirstName,LastName = x.LastName,Phone = x.Phone,CityId = x.CityId});
+        return profile.ToList();
+        
     }
     
-    public Profile GetProfile(long id)
+    public GetProfileDto GetProfile(int id)
     {
-        return _context.Profiles.Find(id);
+        var profile = _context.Profiles.Find(id);
+        
+        var result = new GetProfileDto
+        {
+            Id = profile.Id,FirstName = profile.FirstName,LastName = profile.LastName,Phone = profile.Phone,CityId = profile.CityId
+        };
+        return result;
     }
     
-    public string PostProfile(Profile profile)
+    public string PostProfile(PutpostProfileDto profile)
     {
         if (_context.Profiles.Any(x=>x.Phone==profile.Phone || x.Email==profile.Email) )
         {
             return "Acount with same details already exists";
-            
         }
         else
         {
-            _context.Profiles.Add(profile);
+            var result=new Profile{Id = profile.Id,FirstName = profile.FirstName,LastName = profile.LastName,Phone = profile.Phone,CityId = profile.CityId,Email =  profile.Email,Age =  profile.Age,IsPass = profile.IsPass,Password =  profile.Password,ConfirmPassword =  profile.ConfirmPassword,BirthDate =  profile.BirthDate,AnnualIncome = profile.AnnualIncome };
+            _context.Profiles.Add(result);
             _context.SaveChanges();
             return "Success";
-            
         }
         
 
 
     }
-    
-    public string PutProfile(long id, Profile profile)
+    public string PutProfile(long id, PutpostProfileDto profile)
     {
         var currentProfile = _context.Profiles.Find(id);
-        if (_context.Profiles.Any(x=>(x.Phone==profile.Phone || x.Email==profile.Email)&&id!=currentProfile.Id) )
+     
+        if (_context.Profiles.Any(x=>(x.Phone==profile.Phone || x.Email==profile.Email)&&x.Id!=id) )
+        {
+            return "Email or mobile number is invalid";
+        }
+        else
         {
             if (currentProfile != null)
             {
                 if (profile.Password!=profile.ConfirmPassword)
                 {
                     return "password and confirm password is differnent";
-
                 }
-                _context.Update(profile);
+                currentProfile.FirstName = profile.FirstName;
+                currentProfile.LastName = profile.LastName;
+                currentProfile.Email = profile.Email;
+                currentProfile.Phone = profile.Phone;
+                currentProfile.CityId = profile.CityId;
+                currentProfile.Password = profile.Password;
+                currentProfile.ConfirmPassword = profile.ConfirmPassword;
+                currentProfile.Age = profile.Age;
+                currentProfile.BirthDate = profile.BirthDate;
+                currentProfile.AnnualIncome = profile.AnnualIncome;
+                currentProfile.IsPass = profile.IsPass;
+                
+                _context.Update(currentProfile);
                 _context.SaveChanges();
                 return "Success";
             }
@@ -62,13 +85,6 @@ public class ProfileRepository: IProfileRepository
             {
                 return "eomething is wrong";
             }
-            
-            
-            
-        }
-        else
-        {
-            return "Email or mobile number is invalid";
         }
         
     }
@@ -80,13 +96,12 @@ public class ProfileRepository: IProfileRepository
         {
             _context.Profiles.Remove(currentProfile);
             _context.SaveChanges();
+            return "Success";
         }
-        return "Success";
-        
+        else
+        {
+            return "something is wrong";
+        }
     }
-    
-    
-    
-    
     
 }

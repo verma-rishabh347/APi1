@@ -23,36 +23,36 @@ public class CountryController:ControllerBase
     }
     
     [HttpGet]
-    public List<GetCountryDto> Get()
+    public async Task<List<GetCountryDto>>  Get()
     {
-        return _contryRepository.GetCountry().ToList();
+        return await _contryRepository.GetCountry();
     }
     [HttpGet("{id}")]
     
-    public GetCountryDto get(int id)
+    public async Task<GetCountryDto> Get(int id)
     {
-        return _contryRepository.GetCountry(id);
+        return await _contryRepository.GetCountry(id);
     }
 
     [HttpPost]
-    public String Add(CreateUpdateCountryDto country)
+    public async Task<String> Add(CreateUpdateCountryDto country)
     {
-        return _contryRepository.AddCountry(country);
+        return await _contryRepository.AddCountry(country);
     }
 
 
     [HttpDelete("{id}")]
-    public string Delete(int id)
+    public async  Task<String> Delete(int id)
     {
-        return _contryRepository.DeleteCountry(id);
+        return await _contryRepository.DeleteCountry(id);
         
     }
 
 
     [HttpPut("{id}")]
-    public string Put(int id, CreateUpdateCountryDto country)
+    public async Task<String> Put(int id, CreateUpdateCountryDto country)
     {
-        return _contryRepository.PutCountry(id, country);
+        return await _contryRepository.PutCountry(id, country);
     }
     
 }

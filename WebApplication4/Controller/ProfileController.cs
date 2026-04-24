@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using WebApplication4.Model;
+using WebApplication4.Model.DTO.Profile;
 using WebApplication4.Repository.ProfileRepository;
 
 namespace WebApplication4.Controller;
@@ -18,13 +19,13 @@ public class ProfileController:ControllerBase
     }
 
     [HttpGet]
-    public List<Profile> Get()
+    public List<GetProfileDto> Get()
     {
         return _profileRepository.GetProfile();
     }
     
     [HttpGet("{id}")]
-    public Profile Get(long id)
+    public GetProfileDto Get(int id)
     {
         return _profileRepository.GetProfile(id);
     }
@@ -32,7 +33,7 @@ public class ProfileController:ControllerBase
 
 
     [HttpPost]
-    public string Post(Profile profile)
+    public string Post(PutpostProfileDto profile)
     {
         return _profileRepository.PostProfile(profile);
 
@@ -40,7 +41,7 @@ public class ProfileController:ControllerBase
     }
 
     [HttpPut("{id}")]
-    public string Put(long id, Profile profile)
+    public string Put(long id, PutpostProfileDto profile)
     {
        return _profileRepository.PutProfile(id, profile);
     }

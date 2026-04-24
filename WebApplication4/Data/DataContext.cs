@@ -5,7 +5,6 @@ namespace WebApplication4.Data;
 
 public class DataContext:DbContext
 {
-    private readonly DataContext _dataContext;
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
